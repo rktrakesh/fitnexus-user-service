@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
                 throw new RuntimeException("User with email " + userRequest.getEmail() + " already exists");
             }
             User user = new User();
-            user.setFirstName(user.getFirstName());
+            user.setFirstName(userRequest.getFirstName());
             user.setLastName(userRequest.getLastName());
             user.setPassword(userRequest.getPassword());
             user.setEmail(userRequest.getEmail());
