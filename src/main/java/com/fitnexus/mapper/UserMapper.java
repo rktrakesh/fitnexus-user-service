@@ -7,6 +7,7 @@ public class UserMapper {
     public static UserResponse mapToDto(User user) {
         UserResponse response = new UserResponse();
         response.setId(user.getId());
+        response.setKeycloakId(user.getKeycloakId());
         response.setEmail(user.getEmail());
         response.setPassword(user.getPassword());
         response.setFirstName(user.getFirstName());

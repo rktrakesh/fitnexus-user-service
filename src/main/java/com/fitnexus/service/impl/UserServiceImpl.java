@@ -9,8 +9,6 @@ import com.fitnexus.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -29,16 +27,18 @@ public class UserServiceImpl implements UserService {
             if (userRequest == null) {
                 throw new IllegalAccessException("User request must not be null;");
             }
-            if (userRepository.findByEmail(userRequest.getEmail())) {
-                throw new RuntimeException("User with email " + userRequest.getEmail() + " already exists");
-            }
-            User user = new User();
-            user.setFirstName(userRequest.getFirstName());
-            user.setLastName(userRequest.getLastName());
-            user.setPassword(userRequest.getPassword());
-            user.setEmail(userRequest.getEmail());
-            User resister = userRepository.save(user);
-            return UserMapper.mapToDto(resister);
+            return userRepository.findByEmail(userRequest.getEmail())
+                    .map(UserMapper::mapToDto)
+                    .orElseGet(() -> {
+                        User user = new User();
+                        user.setFirstName(userRequest.getFirstName());
+                        user.setKeycloakId(userRequest.getKeycloakId());
+                        user.setLastName(userRequest.getLastName());
+                        user.setPassword(userRequest.getPassword());
+                        user.setEmail(userRequest.getEmail());
+                        User resister = userRepository.save(user);
+                        return UserMapper.mapToDto(resister);
+                    });
         } catch (Exception e) {
             throw new RuntimeException("Exception while registering new user: " + e.getMessage());
         }
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean validateUserById(String userId) {
-        return userRepository.existsById(userId);
+        return userRepository.existsByKeycloakId(userId);
     }
 
 }

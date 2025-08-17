@@ -12,6 +12,8 @@ public class UserRequest {
     @NotBlank(message = "Email must not be empty, provide email details.")
     private String email;
 
+    private String keycloakId;
+
     @NotBlank(message = "Password field must not be empty")
     @Size(min = 6, message = "Password must be more than 6 characters.")
     private String password;
